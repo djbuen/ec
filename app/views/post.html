@@ -1,0 +1,29 @@
+<div class="container">
+<h2>My Posts</h2>
+  <form role="form" ng-submit="addPost()">
+    <div class="row">
+      <p class="input-group">
+        <input type="text" ng-model="title" placeholder="What's on your mind?" class="form-control">
+        <textarea rows="10" ng-model="body" class="form-control"></textarea>
+        <span class="input-group-btn">
+          <input type="submit" class="btn btn-primary" value="Add">
+        </span>
+      </p>
+    </div>
+  </form>
+
+  <p class="input-group" ng-repeat="item in posts">
+    <input type="text" ng-model="item.title" class="form-control">
+    <span class="input-group-btn">
+    <button class="btn btn-danger" ng-click="updatePost(item)" aria-label="Remove">update</button>
+    <button class="btn btn-danger" ng-click="removePost(item)" aria-label="Remove">X</button>
+    </span>
+  </p>
+</div>
+
+<div>
+    <ul ng-repeat="post in posts">
+       <h1> title: {{post.title}} </h1>
+       <p>  {{post.body}} </p>
+    </ul>
+</div>

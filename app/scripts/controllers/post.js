@@ -7,8 +7,8 @@
  * Controller of the blogApp
  */
 angular.module('blogApp')
-  .controller('MainCtrl', function($rootScope, $scope, $resource, $auth, Post, $cookieStore) {
-     var resource = $resource('/api/all_posts.json',{},{
+  .controller('PostCtrl', function($rootScope, $scope, $resource, $auth, Post, $cookieStore) {
+     var resource = $resource('/api/posts.json',{},{
         save:{
             method:"POST",
             headers : $auth.retrieveData('auth_headers')
@@ -42,10 +42,8 @@ angular.module('blogApp')
 		 });
     };
 
- console.log($auth.retrieveData('auth_headers'));
-console.log($scope.headers);
-
-
+  console.log($auth.retrieveData('auth_headers'));
+  console.log($scope.headers);
 
    $scope.posts = resource.query();
   });

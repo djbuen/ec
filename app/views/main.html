@@ -1,28 +1,10 @@
 <div class="container">
-<h2>My todos</h2>
-  <form role="form" ng-submit="addTodo()">
-    <div class="row">
-      <p class="input-group">
-        <input type="text" ng-model="todo" placeholder="What needs to be done?" class="form-control">
-        <span class="input-group-btn">
-          <input type="submit" class="btn btn-primary" value="Add">
-        </span>
-      </p>
-    </div>
-  </form>
-
-  <p class="input-group" ng-repeat="todo in items">
-    <input type="hidden" ng-model="todo.id" class="form-control">
-    <input type="text" ng-model="todo.title" class="form-control">
-    <span class="input-group-btn">
-    <button class="btn btn-danger" ng-click="updateTodo(todo)" aria-label="Remove">X</button>
-    </span>
-  </p>
+<h2>All Posts</h2>
 </div>
 
 <div>
-    <ul ng-repeat="item in items">
-       <h1> title: {{item.title}} </h1>
-       <p> link: {{item.link}} </p>
+    <ul ng-repeat="post in posts">
+       <h1> title: {{post.title}} </h1>
+       <p>  {{post.body}} </p>
     </ul>
 </div>

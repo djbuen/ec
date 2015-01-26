@@ -1,4 +1,6 @@
-// Generated on 2015-01-22 using generator-angular 0.10.0
+// Gruntfile.js
+
+// Generated on 2014-07-18 using generator-angular 0.9.5
 'use strict';
 
 // # Globbing
@@ -44,9 +46,9 @@ module.exports = function (grunt) {
         files: ['test/spec/{,*/}*.js'],
         tasks: ['newer:jshint:test', 'karma']
       },
-      styles: {
-        files: ['<%= yeoman.app %>/styles/{,*/}*.css'],
-        tasks: ['newer:copy:styles', 'autoprefixer']
+      compass: {
+        files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
+        tasks: ['compass:server', 'autoprefixer']
       },
       gruntfile: {
         files: ['Gruntfile.js']
@@ -66,16 +68,29 @@ module.exports = function (grunt) {
     // The actual grunt server settings
     connect: {
       options: {
-        port: 3000,
+        port: 9000,
         // Change this to '0.0.0.0' to access the server from outside.
         hostname: '0.0.0.0',
         livereload: 35729
       },
+      proxies: [
+        {
+          context: '/api',
+          host: '0.0.0.0',
+          port: 3000
+        }
+      ],
       livereload: {
         options: {
           open: true,
-          middleware: function (connect) {
-            return [
+          middleware: function (connect, options) {
+            if (!Array.isArray(options.base)) {
+              options.base = [options.base];
+            }
+
+            // Setup the proxy
+            var middlewares = [
+              require('grunt-connect-proxy/lib/utils').proxyRequest,
               connect.static('.tmp'),
               connect().use(
                 '/bower_components',
@@ -83,6 +98,12 @@ module.exports = function (grunt) {
               ),
               connect.static(appConfig.app)
             ];
+
+            // Make directory browse-able.
+            var directory = options.directory || options.base[options.base.length - 1];
+            middlewares.push(connect.directory(directory));
+
+            return middlewares;
           }
         }
       },
@@ -138,7 +159,7 @@ module.exports = function (grunt) {
           src: [
             '.tmp',
             '<%= yeoman.dist %>/{,*/}*',
-            '!<%= yeoman.dist %>/.git{,*/}*'
+            '!<%= yeoman.dist %>/.git*'
           ]
         }]
       },
@@ -162,9 +183,44 @@ module.exports = function (grunt) {
 
     // Automatically inject Bower components into the app
     wiredep: {
+      options: {
+        cwd: '<%= yeoman.app %>'
+      },
       app: {
         src: ['<%= yeoman.app %>/index.html'],
         ignorePath:  /\.\.\//
+      },
+      sass: {
+        src: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
+        ignorePath: /(\.\.\/){1,2}bower_components\//
+      }
+    },
+
+    // Compiles Sass to CSS and generates necessary files if requested
+    compass: {
+      options: {
+        sassDir: '<%= yeoman.app %>/styles',
+        cssDir: '.tmp/styles',
+        generatedImagesDir: '.tmp/images/generated',
+        imagesDir: '<%= yeoman.app %>/images',
+        javascriptsDir: '<%= yeoman.app %>/scripts',
+        importPath: './bower_components',
+        httpImagesPath: '/images',
+        httpGeneratedImagesPath: '/images/generated',
+        httpFontsPath: '/styles/fonts',
+        relativeAssets: false,
+        assetCacheBuster: false,
+        raw: 'Sass::Script::Number.precision = 10\n'
+      },
+      dist: {
+        options: {
+          generatedImagesDir: '<%= yeoman.dist %>/images/generated'
+        }
+      },
+      server: {
+        options: {
+          debugInfo: true
+        }
       }
     },
 
@@ -274,18 +330,19 @@ module.exports = function (grunt) {
       }
     },
 
-    // ng-annotate tries to make the code safe for minification automatically
-    // by using the Angular long form for dependency injection.
-    ngAnnotate: {
-      dist: {
-        files: [{
-          expand: true,
-          cwd: '.tmp/concat/scripts',
-          src: ['*.js', '!oldieshim.js'],
-          dest: '.tmp/concat/scripts'
-        }]
-      }
-    },
+    // ngmin tries to make the code safe for minification automatically by
+    // using the Angular long form for dependency injection. It doesn't work on
+    // things like resolve or inject so those have to be done manually.
+//    ngmin: {
+//      dist: {
+//        files: [{
+//          expand: true,
+//          cwd: '.tmp/concat/scripts',
+//          src: '*.js',
+//          dest: '.tmp/concat/scripts'
+//        }]
+//      }
+//    },
 
     // Replace Google CDN references
     cdnify: {
@@ -308,7 +365,7 @@ module.exports = function (grunt) {
             '*.html',
             'views/{,*/}*.html',
             'images/{,*/}*.{webp}',
-            'fonts/{,*/}*.*'
+            'fonts/*'
           ]
         }, {
           expand: true,
@@ -317,8 +374,8 @@ module.exports = function (grunt) {
           src: ['generated/*']
         }, {
           expand: true,
-          cwd: 'bower_components/bootstrap/dist',
-          src: 'fonts/*',
+          cwd: '.',
+          src: 'bower_components/bootstrap-sass-official/assets/fonts/bootstrap/*',
           dest: '<%= yeoman.dist %>'
         }]
       },
@@ -331,20 +388,20 @@ module.exports = function (grunt) {
     },
 
     // Run some tasks in parallel to speed up the build process
-    concurrent: {
+concurrent: {
       server: [
-        'copy:styles'
+        'compass:server'
       ],
       test: [
-        'copy:styles'
+        'compass'
       ],
       dist: [
-        'copy:styles',
+        'compass:dist',
         'imagemin',
         'svgmin'
       ]
     },
-
+ 
     // Test settings
     karma: {
       unit: {
@@ -353,36 +410,38 @@ module.exports = function (grunt) {
       }
     }
   });
-
-
+ 
+ 
   grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
     if (target === 'dist') {
       return grunt.task.run(['build', 'connect:dist:keepalive']);
     }
-
+ 
     grunt.task.run([
       'clean:server',
       'wiredep',
       'concurrent:server',
       'autoprefixer',
+      'configureProxies',
       'connect:livereload',
       'watch'
     ]);
   });
-
+ 
   grunt.registerTask('server', 'DEPRECATED TASK. Use the "serve" task instead', function (target) {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
     grunt.task.run(['serve:' + target]);
   });
-
+ 
   grunt.registerTask('test', [
     'clean:server',
     'concurrent:test',
     'autoprefixer',
+    'configureProxies',
     'connect:test',
     'karma'
   ]);
-
+ 
   grunt.registerTask('build', [
     'clean:dist',
     'wiredep',
@@ -390,7 +449,6 @@ module.exports = function (grunt) {
     'concurrent:dist',
     'autoprefixer',
     'concat',
-    'ngAnnotate',
     'copy:dist',
     'cdnify',
     'cssmin',
@@ -399,10 +457,13 @@ module.exports = function (grunt) {
     'usemin',
     'htmlmin'
   ]);
-
+ 
   grunt.registerTask('default', [
     'newer:jshint',
     'test',
     'build'
   ]);
+ 
+  grunt.loadNpmTasks('grunt-connect-proxy');
 };
+

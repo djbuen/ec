@@ -1,5 +1,4 @@
-'use strict';
-
+'use strict'
 /**
  * @ngdoc overview
  * @name blogApp
@@ -8,26 +7,90 @@
  *
  * Main module of the application.
  */
-angular
-  .module('blogApp', [
+var User = {}
+var app = angular.module('blogApp',[
     'ngAnimate',
     'ngCookies',
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
-  ])
-  .config(function ($routeProvider) {
+    'ngTouch',
+		'ng-token-auth'
+]).config(function($routeProvider, $authProvider){
+    $authProvider.configure({
+			apiUrl: "http://198.58.120.167:3000/api",
+      storage: "cookies",
+			handleLoginResponse: function(response, $scope, headers) {
+        console.log(headers);
+        console.log(response);
+        console.log($scope);
+				$scope.user = response.data
+
+        return response.data;
+      },
+      handleTokenValidationResponse: function(response) {
+        console.log(response);
+        return response.data;
+      },
+//			parseExpiry: function(headers) {
+//				// convert from UTC ruby (seconds) to UTC js (milliseconds)
+//				console.log(headers);
+//				return (parseInt(headers['expiry']) * 1000) || null;
+//			}
+   //tokenFormat: {
+    //    "Authorization": "token={{ token }} expiry={{ expiry }} uid={{ uid }}"
+     // }
+ tokenFormat: {
+        "access-token": "{{ token }}",
+        "token-type":   "Bearer",
+        "client":       "{{ clientId }}",
+        "expiry":       "{{ expiry }}",
+        "uid":          "{{ uid }}"
+      }
+
+      // parse the expiry from the 'Authorization' param
+      
+    })
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
+      .when('/home', {
+        templateUrl: 'views/main.html',
+        controller: 'MainCtrl',
+      })
+      .when('/posts', {
+        templateUrl: 'views/post.html',
+        controller: 'PostCtrl',
+        resolve: { auth: ['$auth', function($auth) { return $auth.validateUser(); }] }
+      })
       .when('/about', {
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl'
       })
-      .otherwise({
-        redirectTo: '/'
-      });
+			.when('/sign_in', {
+				templateUrl: 'views/auth/_login.html',
+				controller: 'UserSessionCtrl'
+			})
+			.when('/sign_up', {
+				templateUrl: 'views/auth/_register.html',
+				controller: 'UserSessionCtrl'
+			})
+			.otherwise('/', {
+					redirectTo: "/"
+			});
+});
+app.run(['$rootScope', '$location', '$cookieStore','$http', function($rootScope, $location, $cookieStore, $auth, $http){
+	$rootScope.$on('auth:login-success', function(ev, user, token) {
+    $cookieStore.put('user', user);
+    $cookieStore.put('token', token);
+    $rootScope.user = $cookieStore.get('user');
+    alert('Welcome ' +  user.email);
+    $location.path('/home');
   });
+}]);
+  app.factory('Post', ['$resource', function($resource, $auth) {
+  return $resource('/api/posts/:id.json', null, {
+    'update': { method:'PUT' },
+  }); }])
