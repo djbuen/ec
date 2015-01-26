@@ -1,5 +1,7 @@
 node_modules
 dist
+app/scripts/controller/*.*.swp
+app/views/*.*.swp
 .tmp
 .sass-cache
 bower_components
