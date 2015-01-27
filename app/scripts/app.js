@@ -89,6 +89,12 @@ app.run(['$rootScope', '$location', '$cookieStore','$http', function($rootScope,
     alert('Welcome ' +  user.email);
     $location.path('/home');
   });
+  $rootScope.$on('auth:login-error', function(ev, reason) {
+    alert('auth failed because '+ reason.errors[0]);
+    });
+  $rootScope.$on('auth:registration-email-error', function(ev, reason) {
+    alert("Registration failed: " + reason.errors[0]);
+    });
 }]);
   app.factory('Post', ['$resource', function($resource, $auth) {
   return $resource('/api/posts/:id.json', null, {

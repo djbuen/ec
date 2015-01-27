@@ -40,7 +40,8 @@ angular.module('blogApp')
     };
     $scope.removePost = function(index) {
       $scope.posts.splice(index, 1);
-      resource.delete({id: index.id});
+      resource.delete({id: index.id},function(u, putResponseHeader){
+      });
     };
     //var Post = $resource('http://198.58.120.167:3000/api/posts/:id.json', null, {
 	   // 'update': { method: 'PUT', params: {id: "@id"}}
