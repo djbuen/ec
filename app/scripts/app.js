@@ -16,7 +16,7 @@ var app = angular.module('blogApp',[
     'ngTouch',
 		'ng-token-auth'
 ]).config(function($routeProvider, $authProvider){
-    $authProvider.configure({
+    $authProvider.configure([{default:{
 			apiUrl: "http://198.58.120.167:3000/api",
       storage: "cookies",
 			handleLoginResponse: function(response, $scope, headers) {
@@ -46,10 +46,17 @@ var app = angular.module('blogApp',[
         "expiry":       "{{ expiry }}",
         "uid":          "{{ uid }}"
       }
-
-      // parse the expiry from the 'Authorization' param
-      
-    })
+     }
+    }, {
+    adminUser: {
+      apiUrl: "http://198.58.120.167:3000/api",
+      storage:               "cookies",
+      signOutUrl:            '/admin_auth/sign_out',
+      emailSignInPath:       '/admin_auth/sign_in',
+      emailRegistrationPath: '/admin_auth',
+      tokenValidationPath:   '/admin_auth/validate_token'
+     }
+    }])
     $routeProvider
       .when('/', {
         templateUrl: 'views/main.html',
@@ -71,6 +78,14 @@ var app = angular.module('blogApp',[
 			.when('/sign_in', {
 				templateUrl: 'views/auth/_login.html',
 				controller: 'UserSessionCtrl'
+			})
+			.when('/admin/sign_in', {
+				templateUrl: 'views/auth/_login.html',
+				controller: 'AdminCtrl'
+			})
+			.when('/admin/sign_up', {
+				templateUrl: 'views/auth/_register.html',
+				controller: 'AdminCtrl'
 			})
 			.when('/sign_up', {
 				templateUrl: 'views/auth/_register.html',
