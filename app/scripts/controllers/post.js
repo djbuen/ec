@@ -17,11 +17,6 @@ angular.module('blogApp')
             method:"POST",
             headers : $auth.retrieveData('auth_headers')
         },
-        query:{
-            method:"GET",
-            headers : $auth.retrieveData('auth_headers'),
-            isArray: true
-        },
         update: {
             method:"PATCH",
             headers : $auth.retrieveData('auth_headers')
@@ -43,9 +38,6 @@ angular.module('blogApp')
       resource.delete({id: index.id},function(u, putResponseHeader){
       });
     };
-    //var Post = $resource('http://198.58.120.167:3000/api/posts/:id.json', null, {
-	   // 'update': { method: 'PUT', params: {id: "@id"}}
-			//});
     $scope.updatePost = function(item) {
 		$scope.post = resource.get({id: item.id}, function(){
 			$scope.post.title = item.title;
@@ -54,5 +46,11 @@ angular.module('blogApp')
 		 });
     };
 
-   $scope.posts = resource.query();
+    var all_post = $resource('/api/all_posts.json',{},{
+        query:{
+            method:"GET",
+            headers : $auth.retrieveData('auth_headers'),
+            isArray: true
+        }});
+   $scope.posts = all_post.query();
   });
