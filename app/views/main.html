@@ -6,5 +6,17 @@
     <ul ng-repeat="post in posts">
        <h1> title: {{post.title}} </h1>
        <p>  {{post.body}} </p>
+    Comments: 
+    <li ng-repeat="item in post.comments">
+    <p>{{item.body}}</p>
+    <p>author: {{item.user.email}}</p>
+    </li>
+  </p>
+  <textarea rows="3" ng-model="item.body" class="form-control"></textarea>
+    <span class="input-group-btn">
+    <button class="btn btn-danger" ng-click="addComment(post)" aria-label="Remove" ng-controller="CommentCtrl">add comment</button>
+    </span>
+
+
     </ul>
 </div>
