@@ -79,7 +79,7 @@ var app = angular.module('blogApp',[
 			})
 			.otherwise('/', {
 					redirectTo: "/"
-			});
+			})
 });
 app.run(['$rootScope', '$location', '$cookieStore','$http', function($rootScope, $location, $cookieStore, $auth, $http){
 	$rootScope.$on('auth:login-success', function(ev, user, token) {
