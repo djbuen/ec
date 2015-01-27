@@ -8,7 +8,7 @@
  * Controller of the blogApp
  */
 angular.module('blogApp')
-.controller('UserSessionCtrl',function($scope, $location, $auth) {
+.controller('UserSessionCtrl',function($scope, $location, $auth, $cookieStore) {
 	$scope.handleRegBtnClick = function() {
 		$auth.submitRegistration($scope.user)
 		.then(function() {
@@ -25,7 +25,7 @@ angular.module('blogApp')
 				password: $scope.user.password });
 			};
 
- $scope.handleSignOutBtnClick = function() {
+  $scope.handleSignOutBtnClick = function() {
         $auth.signOut()
         .then(function(resp) {
           // handle success response
@@ -33,5 +33,10 @@ angular.module('blogApp')
         .catch(function(resp) {
           // handle error response
         });
+    };
+  $scope.logout = function($location) {
+    $auth.signOut();
+    $cookieStore.remove('user');
+    $location.path('/home');
     };
 	});

@@ -7,7 +7,6 @@
  *
  * Main module of the application.
  */
-var User = {}
 var app = angular.module('blogApp',[
     'ngAnimate',
     'ngCookies',
