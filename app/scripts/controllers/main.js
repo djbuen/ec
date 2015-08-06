@@ -1,12 +1,12 @@
 'use strict';
 /**
  * @ngdoc function
- * @name blogApp.controller:MainCtrl
+ * @name ecApp.controller:MainCtrl
  * @description
  * # MainCtrl
- * Controller of the blogApp
+ * Controller of the ecApp
  */
-angular.module('blogApp')
+angular.module('ecApp')
   .controller('MainCtrl', function($rootScope, $scope, $resource, $auth, Post, $cookieStore) {
      var resource = $resource('/api/all_posts.json',{},{
         save:{

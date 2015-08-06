@@ -1,13 +1,13 @@
 'use strict'
 /**
  * @ngdoc overview
- * @name blogApp
+ * @name ecApp
  * @description
- * # blogApp
+ * # ecApp
  *
  * Main module of the application.
  */
-var app = angular.module('blogApp',[
+var app = angular.module('ecApp',[
     'ngAnimate',
     'ngCookies',
     'ngResource',

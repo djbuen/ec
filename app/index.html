@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="blogApp">
+  <body ng-app="ecApp">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -24,15 +24,13 @@
       <div class="header">
         <ul class="nav nav-pills pull-right">
           <li class="active"><a ng-href="#/home">Home</a></li>
-          <li ng-show="user.id"><a ng-href="#/posts">Your Posts</a></li>
+          <li ng-show="user.id"><a ng-href="#/posts">Cart</a></li>
 					<li ng-show="!user.id"><a ng-href="#/sign_in">Sign in</a></li>
 					<li ng-show="!user.id"><a ng-href="#/sign_up">Register</a></li>
-					<li ng-show="!admin.id"><a ng-href="#/admin/sign_in">Admin Sign in</a></li>
-					<li ng-show="!admin.id"><a ng-href="#/admin/sign_up">Admin Register</a></li>
 					<li ng-show="user.id"><a href="#/">{{ user.email }}</a></li>
           <li ng-show="user.id"><a ng-click='logout()' ng-controller="UserSessionCtrl">Sign out</a></li>
         </ul>
-        <h3 class="text-muted">blog</h3>
+        <h3 class="text-muted">English Central</h3>
 				<div class="collapse navbar-collapse pull-right" ui-view="viewA">
 				 <!-- <div ng-include="'views/nav.html'"></div> -->
 				 <ui-view></ui-view>

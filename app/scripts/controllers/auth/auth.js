@@ -2,12 +2,12 @@
 
 /**
  * @ngdoc function
- * @name blogApp.controller:AuthAuthctrlCtrl
+ * @name ecApp.controller:AuthAuthctrlCtrl
  * @description
  * # AuthAuthctrlCtrl
- * Controller of the blogApp
+ * Controller of the ecApp
  */
-angular.module('blogApp')
+angular.module('ecApp')
 .controller('UserSessionCtrl',function($scope, $location, $auth, $cookieStore) {
 	$scope.handleRegBtnClick = function() {
 		$auth.submitRegistration($scope.user)

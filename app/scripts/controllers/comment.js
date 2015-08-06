@@ -1,12 +1,12 @@
 'use strict';
 /**
  * @ngdoc function
- * @name blogApp.controller:PostCtrl
+ * @name ecApp.controller:PostCtrl
  * @description
  * # MainCtrl
- * Controller of the blogApp
+ * Controller of the ecApp
  */
-angular.module('blogApp')
+angular.module('ecApp')
   .controller('CommentCtrl', function($rootScope, $scope, $resource, $auth, Post, $cookieStore) {
      var resource = $resource('/api/comments/:id.json',{},{
         get:{
