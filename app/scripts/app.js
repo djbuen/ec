@@ -17,7 +17,7 @@ var app = angular.module('blogApp',[
 		'ng-token-auth'
 ]).config(function($routeProvider, $authProvider){
     $authProvider.configure([{default:{
-			apiUrl: "http://198.58.120.167:3000/api",
+      apiUrl: "http://198.58.120.167:3000/api",
       storage: "cookies",
 			handleLoginResponse: function(response, $scope, headers) {
         console.log(headers);
