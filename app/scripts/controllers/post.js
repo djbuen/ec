@@ -45,7 +45,7 @@ angular.module('ecApp')
       $scope.post.$update({id: item.id});
 		 });
     };
-
+  
     var all_post = $resource('/api/all_posts.json',{},{
         query:{
             method:"GET",

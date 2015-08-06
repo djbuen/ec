@@ -13,7 +13,11 @@
 
 <div>
     <ul ng-repeat="post in posts">
-       <h1> Product Name: {{post.title}} </h1>
+       <h1> Product Name: {{post.title}}
+       <button class="btn btn-primary" type="button" ng-show="user.id" ng-click="addToCart(post)">
+        Add to Cart
+       </h1>
+       </button>
        <p>  {{post.body}} </p>
     Comments: 
     <li ng-repeat="item in post.comments">
