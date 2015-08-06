@@ -47,5 +47,15 @@ console.log($scope.headers);
 
 
 
+   $scope.search_name = "";
+   $scope.searchProduct = function() {
+    var all_post = $resource('/api/all_posts.json',{ title: $scope.search_name},{
+          query:{
+              method:"GET",
+              headers : $auth.retrieveData('auth_headers'),
+              isArray: true
+          }});
+     $scope.posts = all_post.query();
+   }
    $scope.posts = resource.query();
   });
